@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Player
 {
@@ -12,8 +13,6 @@ namespace Player
             Arm,
             Key
         }
-        private const float MAX_REACH = 1f;
-        private const float ANGLE_BOUNDARY = 15f;
         
         private enum ArmTurn
         {
@@ -23,9 +22,12 @@ namespace Player
         
         [SerializeField] private GameObject mLeftHand;
         [SerializeField] private GameObject mRightHand;
+        [SerializeField] private float minArmReach = 0.25f;
+        [SerializeField] private float maxArmReach = 2f;
         [SerializeField] private float armConnectionPoint = 0.3f;
-        [SerializeField] private float armSpeed = 5f;
+        [SerializeField] private float armSpeed = 10f;
         [SerializeField] private MovementMode movementMode;
+        [SerializeField] private MountainGenerator mountainGenerator;
         private ArmTurn climbingArm = ArmTurn.Left;
         private Camera mainCamera;
         private bool mouseDown;
@@ -81,9 +83,12 @@ namespace Player
             Vector3 adjustedPosition = transform.position;
             adjustedPosition.y += armConnectionPoint;
             Vector3 direction = (worldPosition - adjustedPosition).normalized;
-            if (distance > MAX_REACH)
+            if (distance > maxArmReach)
             {
-                worldPosition = adjustedPosition + direction * MAX_REACH;
+                worldPosition = adjustedPosition + direction * maxArmReach;
+            } else if (distance < minArmReach)
+            {
+                worldPosition = adjustedPosition + direction * minArmReach;
             }
 
             // This might be slightly off because of camera angle
@@ -152,6 +157,7 @@ namespace Player
         
         public void MovementUpdate()
         {
+            mountainGenerator.Refresh(transform);
             if (movementMode == MovementMode.Key)
             {
                 BasicMovement();
