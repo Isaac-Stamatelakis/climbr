@@ -18,6 +18,7 @@ public class MountainGenerator : MonoBehaviour
             {
                 GameObject plane = GameObject.Instantiate(planePrefab,transform);
                 plane.transform.localPosition = planeSize * new Vector3(x, y, 0);
+                plane.name = $"Wall[{x},{y}]";
             }
         }
     }

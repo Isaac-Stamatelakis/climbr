@@ -903,7 +903,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mLeftHand: {fileID: 1872994072}
   mRightHand: {fileID: 1636825820}
-  yOffset: -0.2
+  armConnectionPoint: 0.8
+  armSpeed: 5
 --- !u!4 &1031632035131505855
 Transform:
   m_ObjectHideFlags: 0

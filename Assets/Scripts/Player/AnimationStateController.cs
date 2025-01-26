@@ -53,15 +53,7 @@ namespace Player
             
         }
 
-        private bool IsInputing(KeyCode[] keycodes)
-        {
-            foreach (KeyCode keyCode in keycodes)
-            {
-                if (Input.GetKey(keyCode)) return true;
-            }
-
-            return false;
-        }
+        
         // Update is called once per frame
         void Update()
         {
@@ -74,6 +66,7 @@ namespace Player
                 }
                 else if (CollidingWithWall)
                 {
+                    mountainClimbMovement.Initialize();
                     movementMode = PlayerMovementMode.Climbing;
                 }
                 
@@ -101,7 +94,7 @@ namespace Player
             bool inputed = false;
             foreach (var (keyCodes, direction) in KeyList)
             {
-                if (!IsInputing(keyCodes)) continue;
+                if (!GlobalUtils.AreKeysInputed(keyCodes)) continue;
                 float moveSpeed = Speed;
                 if (running) moveSpeed *= RUN_SPEED_MULTPLIER;
             
