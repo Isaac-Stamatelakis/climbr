@@ -78,11 +78,11 @@ namespace Player
 
         private void ClampWorldPosition(ref Vector3 worldPosition)
         {
-            // Uses player distance, don't really like how this feels
-            float distance = Vector3.Distance(transform.position, worldPosition);
             Vector3 adjustedPosition = transform.position;
             adjustedPosition.y += armConnectionPoint;
             Vector3 direction = (worldPosition - adjustedPosition).normalized;
+            float distance = Vector3.Distance(transform.position, worldPosition);
+            
             if (distance > maxArmReach)
             {
                 worldPosition = adjustedPosition + direction * maxArmReach;

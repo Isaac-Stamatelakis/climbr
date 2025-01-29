@@ -6,7 +6,7 @@ using UnityEngine;
 public class MountainGenerator : MonoBehaviour
 {
     [SerializeField] private GameObject planePrefab;
-    [SerializeField] private int planeSize = 5;
+    private const int PLANE_SIZE = 10;
     const int LOAD_RANGE = 1;
     const int GARBAGE_COLLETION_RATE = 250;
     private int counter = 0;
@@ -14,7 +14,7 @@ public class MountainGenerator : MonoBehaviour
     private HashSet<Vector2Int> farAwayPlanes = new HashSet<Vector2Int>();
     public void Start()
     {
-        for (int x = LOAD_RANGE; x <= LOAD_RANGE; x++)
+        for (int x = -LOAD_RANGE; x <= LOAD_RANGE; x++)
         {
             for (int y = 0; y < LOAD_RANGE; y++)
             {
@@ -26,11 +26,12 @@ public class MountainGenerator : MonoBehaviour
     public void Refresh(Transform playerTransform)
     {
         
-        Vector2Int playerPosition = new Vector2Int((int)playerTransform.position.x / planeSize, (int)playerTransform.position.y / planeSize);
+        Vector2Int playerPosition = new Vector2Int((int)playerTransform.position.x / PLANE_SIZE, (int)playerTransform.position.y / PLANE_SIZE);
         for (int x = -LOAD_RANGE; x <= LOAD_RANGE; x++)
         {
             for (int y = -LOAD_RANGE; y <= LOAD_RANGE; y++)
             {
+                if (y < 0) continue;
                 Vector2Int position = playerPosition + new Vector2Int(x, y);
                 GeneratePlane(position);
                 farAwayPlanes.Remove(position);
@@ -71,7 +72,7 @@ public class MountainGenerator : MonoBehaviour
     {
         if (planeDict.ContainsKey(position)) return;
         GameObject plane = GameObject.Instantiate(planePrefab,transform);
-        plane.transform.localPosition = planeSize * new Vector3(position.x, position.y, 0);
+        plane.transform.localPosition = PLANE_SIZE * new Vector3(position.x, position.y, 0);
         plane.name = $"Wall[{position.x},{position.y}]";
         planeDict[position] = plane;
     }
