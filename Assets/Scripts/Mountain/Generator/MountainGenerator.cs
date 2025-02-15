@@ -39,24 +39,32 @@ public class MountainGenerator : MonoBehaviour
 
         foreach (Vector2Int pillarPosition in pillars)
         {
-            GameObject pillar = new GameObject();
-            pillar.name = $"Pillar[{pillarPosition.x},{pillarPosition.y}]";
-            float zPosition = 2 * pillarPosition.y * PLANES_PER_FACE * PLANE_DIAGONAL_SIZE;
-            float zOffset = Mathf.Abs(PLANES_PER_FACE * PLANE_DIAGONAL_SIZE * (pillarPosition.x % 2));
-            float xPosition = pillarPosition.x * PLANES_PER_FACE * (PLANE_SIZE + PLANE_DIAGONAL_SIZE);
-            float yPosition = pillarPosition.y * PILLAR_HEIGHT * PLANE_SIZE;
-            float yOffset = -Mathf.Abs(PLANE_SIZE * PILLAR_HEIGHT / 2f * ((pillarPosition.x+1) % 2));
-            pillar.transform.SetParent(transform);
-            pillar.transform.localPosition = new Vector3(xPosition, yPosition + yOffset, zPosition + zOffset);
-            for (int x = -LOAD_RANGE; x <= LOAD_RANGE; x++)
-            {
-                for (int y = 0; y <= PILLAR_HEIGHT; y++)
-                {
-                    GeneratePlane(new Vector2Int(x, y), pillarPosition,pillar.transform);
-                }
-            }
+            GeneratePillar(pillarPosition);
         }
         
+    }
+
+    private void GeneratePillar(Vector2Int pillarPosition)
+    {
+        GameObject pillar = new GameObject();
+        pillar.name = $"Pillar[{pillarPosition.x},{pillarPosition.y}]";
+        float zPosition = 2 * pillarPosition.y * PLANES_PER_FACE * PLANE_DIAGONAL_SIZE;
+        float zOffset = Mathf.Abs(PLANES_PER_FACE * PLANE_DIAGONAL_SIZE * (pillarPosition.x % 2));
+        float xPosition = pillarPosition.x * PLANES_PER_FACE * (PLANE_SIZE + PLANE_DIAGONAL_SIZE);
+        float yPosition = pillarPosition.y * PILLAR_HEIGHT * PLANE_SIZE;
+        float yOffset = -Mathf.Abs(PLANE_SIZE * PILLAR_HEIGHT / 2f * ((pillarPosition.x+1) % 2));
+        pillar.transform.SetParent(transform);
+        pillar.transform.localPosition = new Vector3(xPosition, yPosition + yOffset, zPosition + zOffset);
+        const int X_START = PLANES_PER_FACE + PLANES_PER_FACE / 2;
+        for (int x = -X_START; x <= X_START; x++)
+        {
+            for (int y = 0; y <= PILLAR_HEIGHT; y++)
+            {
+                if (pillarPosition.y == 0 && y < PILLAR_HEIGHT/2) continue;
+                if ((x < -PLANES_PER_FACE /2 || x > PLANES_PER_FACE/2) && y < PILLAR_HEIGHT/2) continue; // Culls planes that will be blocked
+                GeneratePlane(new Vector2Int(x, y), pillarPosition,pillar.transform);
+            }
+        }
     }
     
     public void Refresh(Transform playerTransform)
